@@ -15,7 +15,11 @@
       success: (data) => {
         // reload the page
         // console.log(data.toLowerCase(), 'left')
-        SwimTeam.move(JSON.parse(data.toLowerCase()))
+        
+        if (data) {
+          SwimTeam.move(JSON.parse(data.toLowerCase()))
+          setTimeout(getRandomMovement, 100);
+        }
         // window.location = window.location.href;
       },
       error: () => {
@@ -23,9 +27,8 @@
       }
     });
   }
-  // getRandomMovement will be invoked by a button on page
 
-  //
+
 
 
   /////////////////////////////////////////////////////////////////////
@@ -33,7 +36,7 @@
   // Note: remember to fix the URL below.
   /////////////////////////////////////////////////////////////////////
 
-  const ajaxFileUplaod = (file) => {
+  const ajaxFileUpload = (file) => {
     var formData = new FormData();
     formData.append('file', file);
     $.ajax({
@@ -71,8 +74,12 @@
       return;
     }
 
-    ajaxFileUplaod(file);
-    getRandomMovement()
+    ajaxFileUpload(file);
+    
   });
+
+  $('.getdata').on('click', function () {
+    getRandomMovement()
+  })
 
 })();

@@ -21,6 +21,34 @@ module.exports.router = (req, res, next = ()=>{}) => {
     //   messageQueue.dequeue()
     // }
   }
+
+  if (req.method === 'POST') {
+    let body = [];
+    req.on('error', (err) => {
+      console.error(err);
+    }).on('data', (chunk) => {
+      body.push(chunk);
+    }).on('end', () => {
+      body = Buffer.concat(body).toString();
+      messageQueue.enqueue(body)
+
+
+
+
+
+
+    })
+    // console.log(req.params)
+    // res.writeHead(200, headers);
+    // res.end()
+  }
+
+  
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200, headers);
+    res.end()
+  }
+
   // else if (req.method === 'POST') {
   //   let bg = module.exports.backgroundImageFile;
   //   console.log(bg)

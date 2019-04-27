@@ -59,7 +59,6 @@ module.exports.initialize = () => {
       message += (mappedChars[key.name] || key.name);
       console.log('look at all my messages', message)
       logKeypress(key.name);
-      // enqueue('hello')
     }
 
   });
