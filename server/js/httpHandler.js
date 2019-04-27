@@ -3,6 +3,7 @@ const path = require('path');
 const headers = require('./cors');
 const multipart = require('./multipartUtils');
 const messageQueue = require('./messageQueue.js')
+// const defaultPic = require('../spec/water-lg.multipart')
 
 // Path for the background image ///////////////////////
 module.exports.backgroundImageFile = path.join('.', 'background.jpg');
@@ -14,14 +15,20 @@ module.exports.backgroundImageFile = path.join('.', 'background.jpg');
 module.exports.router = (req, res, next = ()=>{}) => {
 
   // write code to handle requests
-  if (req.method === 'GET') {
+
+  if (req.method === 'GET' && req.url === '/background.jpg') {
+    console.log('did you want a background?')
     res.writeHead(200, headers);
-    res.end(JSON.stringify(messageQueue.dequeue()))
-    // while (messageQueue.messages.length > 0) {
-    //   messageQueue.dequeue()
-    // }
+    res.end('this is where your background should be')
   }
 
+  if (req.method === 'GET' && req.url === '/?movements') {
+    res.writeHead(200, headers);
+    res.end(JSON.stringify(messageQueue.dequeue()))
+  }
+
+
+  // post request for swim moves
   if (req.method === 'POST') {
     let body = [];
     req.on('error', (err) => {
@@ -31,16 +38,23 @@ module.exports.router = (req, res, next = ()=>{}) => {
     }).on('end', () => {
       body = Buffer.concat(body).toString();
       messageQueue.enqueue(body)
-
-
-
-
-
-
     })
-    // console.log(req.params)
-    // res.writeHead(200, headers);
-    // res.end()
+
+  }
+
+
+ // future post request for image upload
+  if (req.method === 'POST') {
+    let body = [];
+    req.on('error', (err) => {
+      console.error(err);
+    }).on('data', (chunk) => {
+      body.push(chunk);
+    }).on('end', () => {
+      body = Buffer.concat(body).toString();
+      // messageQueue.enqueue(body)
+      JSON.stringify(body)
+    })
   }
 
   

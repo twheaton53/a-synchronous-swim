@@ -8,6 +8,7 @@
   const getRandomMovement = () => {
     $.ajax({
       type: 'GET',
+      data: 'movements',
       url: serverUrl,
       // cache: false,
       // contentType: false,
@@ -28,7 +29,23 @@
     });
   }
 
-
+  const getBackgroundImage = () => {
+    $.ajax({
+      type: 'GET',
+      data: 'background',
+      url: serverUrl,
+      success: (image) => {
+        if (image) {
+          console.log('Got the image!')
+          console.log('This is the image: ', image)
+        }
+        console.log('get request was successful but no image found')
+      },
+      error: () => {
+        console.log('no image found!!!')
+      }
+    });
+  }
 
 
   /////////////////////////////////////////////////////////////////////
@@ -81,5 +98,5 @@
   $('.getdata').on('click', function () {
     getRandomMovement()
   })
-
+  getBackgroundImage();
 })();
