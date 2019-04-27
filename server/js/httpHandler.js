@@ -18,8 +18,20 @@ module.exports.router = (req, res, next = ()=>{}) => {
 
   if (req.method === 'GET' && req.url === '/background.jpg') {
     console.log('did you want a background?')
-    res.writeHead(200, headers);
-    res.end('this is where your background should be')
+    let { backgroundImageFile } = module.exports;
+    
+
+
+    fs.readFile(backgroundImageFile, (error, results) => {
+      if (error) {
+        res.writeHead(404, headers);
+        res.end();
+      } else {
+        res.writeHead(200, headers);
+        res.write(results)
+        res.end();
+      }
+    });
   }
 
   if (req.method === 'GET' && req.url === '/?movements') {
@@ -30,16 +42,38 @@ module.exports.router = (req, res, next = ()=>{}) => {
 
   // post request for swim moves
   if (req.method === 'POST') {
-    let body = [];
-    req.on('error', (err) => {
-      console.error(err);
-    }).on('data', (chunk) => {
-      body.push(chunk);
-    }).on('end', () => {
-      body = Buffer.concat(body).toString();
-      messageQueue.enqueue(body)
-    })
-
+    if (req.url === '/background.jpg') {
+      console.log('are you trying to upload a background?')
+      let imageData = Buffer.alloc(0);
+      req.on('data', (chunk) => {
+        imageData = Buffer.concat([imageData, chunk]);
+      });
+      req.on('end', () => {
+        console.log('about to finish uploading bg')
+        const file = multipart.getFile(imageData);
+        let { backgroundImageFile } = module.exports;
+        fs.writeFile(backgroundImageFile, file.data, (err) => {
+          if (err) {
+            response.writeHead(400, headers);
+            res.end();
+          } else {
+            res.writeHead(201, headers);
+            res.end();
+          }
+        })
+      })
+    } else {
+      let body = [];
+      req.on('error', (err) => {
+        console.error(err);
+      }).on('data', (chunk) => {
+        body.push(chunk);
+      }).on('end', () => {
+        body = Buffer.concat(body).toString();
+        messageQueue.enqueue(body)
+      })
+    }
+    console.log(req.url)
   }
 
 

@@ -59,17 +59,17 @@
     $.ajax({
       type: 'POST',
       data: formData,
-      url: serverUrl,
+      url: serverUrl + '/background.jpg',
       cache: false,
-      contentType: false,
+      contentType: 'multipart/form',
       processData: false,
       success: () => {
         // reload the page
         console.log('enjoy your new background')
         window.location = window.location.href;
       },
-      error: () => {
-        console.log('failure')
+      error: (errorMessage) => {
+        console.log(errorMessage)
       }
     });
   };
